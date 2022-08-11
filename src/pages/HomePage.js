@@ -3,49 +3,35 @@ import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import PaginationBar from "../components/PaginationBar";
 import SearchForm from "../components/SearchForm";
-import api from "../apiService";
+// import api from "../apiService";
 import { FormProvider } from "../form";
 import { useForm } from "react-hook-form";
 import { Container, Alert, Box, Card, Stack, CardMedia, CardActionArea, Typography, CardContent } from "@mui/material";
+import { useDispatch,useSelector } from "react-redux";
+import { getBookList } from "../components/BookList/bookSlice";
 
 
 
 const BACKEND_API = process.env.REACT_APP_BACKEND_API;
 
 const HomePage = () => {
-  const [books, setBooks] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const totalPage = 10;
   const limit = 10;
-
-  const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
+  const {bookList,errorMessage,loading} = useSelector((state) => state.book);
+  console.log(bookList)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const handleClickBook = (bookId) => {
+    console.log(bookId)
     navigate(`/books/${bookId}`);
   };
 
+useEffect(() => {
+  dispatch(getBookList({pageNum,limit,query}));
+},[dispatch,pageNum, limit, query])
 
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        let url = `/books?_page=${pageNum}&_limit=${limit}`;
-        if (query) url += `&q=${query}`;
-        const res = await api.get(url);
-        setBooks(res.data);
-        setErrorMessage("");
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [pageNum, limit, query]);
   //--------------form
   const defaultValues = {
     searchQuery: ""
@@ -86,7 +72,7 @@ const HomePage = () => {
           </Box>
         ) : (
           <Stack direction="row" spacing={2} justifyContent="space-around" flexWrap="wrap">
-            {books.map((book) => (
+            {bookList.map((book) => (
               <Card
                 key={book.id} onClick={() => handleClickBook(book.id)}
                 sx={{
