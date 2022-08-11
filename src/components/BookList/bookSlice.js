@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 // import { useNavigate } from "react-router-dom";
 import api from '../../apiService';
+import { toast } from "react-toastify";
 
 
 
@@ -9,7 +10,6 @@ const bookListSlice = createSlice({
     initialState: {
         loading: false,
         errorMessage: null,
-        book:[],
         bookList:[],
     },
     reducers:{
@@ -17,7 +17,7 @@ const bookListSlice = createSlice({
             state.bookList = action.payload;
         },
         getBookSuccess(state, action){
-            state.book = action.payload;
+            state.bookList = action.payload;
         }
     },
 })
@@ -28,16 +28,15 @@ export const getBookList = ({pageNum, limit,query}) => async (dispatch) => {
         if (query) url += `&q=${query}`;
         const res = await api.get(url);
         dispatch(bookListSlice.actions.getBooksSuccess(res.data))
-    } catch(err){}
+    } catch(error){toast.error(error.message);}
 }
 
 export const getBook = ({bookId}) => async (dispatch) => {
     try {
-
         let url = `/books/${bookId}`;
        const res = await api.get(url);
         dispatch(bookListSlice.actions.getBookSuccess(res.data))
-    } catch(err){}
+    } catch(error){toast.error(error.message);}
 }
 
 export default bookListSlice.reducer;

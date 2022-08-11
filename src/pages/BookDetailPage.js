@@ -1,39 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import api from "../apiService";
 import { Container, Button, Box, Grid, Stack, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToReading } from "../components/ReadingList/readingSlice";
+import { getBook } from "../components/BookList/bookSlice";
 
 
 const BACKEND_API = process.env.REACT_APP_BACKEND_API;
 
 const BookDetailPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [book, setBook] = useState(null);
   const params = useParams();
   const bookId = params.id;
   const dispatch = useDispatch();
-
+  
+  const {bookList,loading} = useSelector((state) => state.book);
+  
   const addToReadingList = (book) => {
     dispatch(addToReading({book}))
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await api.get(`/books/${bookId}`);
-        setBook(res.data);
-      } catch (error) {
-        toast.error(error.message);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [bookId]);
+    dispatch(getBook({bookId}));
+  },[dispatch,bookId])
 
   return (
     <Container>
@@ -44,34 +33,34 @@ const BookDetailPage = () => {
       ) : (
         <Grid container spacing={2} p={4} mt={5} sx={{ border: "1px solid black" }}>
           <Grid item md={4}>
-            {book && (
+            {bookList && (
               <img
                 width="100%"
-                src={`${BACKEND_API}/${book.imageLink}`}
+                src={`${BACKEND_API}/${bookList.imageLink}`}
                 alt=""
               />
             )}
           </Grid>
           <Grid item md={8}>
-            {book && (
+            {bookList && (
               <Stack>
-                <h2>{book.title}</h2>
+                <h2>{bookList.title}</h2>
                 <Typography variant="body1">
-                  <strong>Author:</strong> {book.author}
+                  <strong>Author:</strong> {bookList.author}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Year:</strong> {book.year}
+                  <strong>Year:</strong> {bookList.year}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Country:</strong> {book.country}
+                  <strong>Country:</strong> {bookList.country}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Pages:</strong> {book.pages}
+                  <strong>Pages:</strong> {bookList.pages}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Language:</strong> {book.language}
+                  <strong>Language:</strong> {bookList.language}
                 </Typography>
-                <Button variant="outlined" sx={{ width: "fit-content" }} onClick={() => addToReadingList(book)}>
+                <Button variant="outlined" sx={{ width: "fit-content" }} onClick={() => addToReadingList(bookList)}>
                   Add to Reading List
                 </Button>
               </Stack>
