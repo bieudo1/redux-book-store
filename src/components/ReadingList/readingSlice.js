@@ -10,10 +10,10 @@ const readingSlice = createSlice({
     },
     reducers:{
         startLoading(state) {
-            state.Loading = true;
+            state.loading = true;
           },
         getReadingSuccess(state, action){
-            state.Loading = false;
+            state.loading = false;
             state.readingList = action.payload;
         }
     }
@@ -32,6 +32,7 @@ export const deleteReading = ({removedBookId}) => async (dispatch) =>{
     dispatch(readingSlice.actions.startLoading());
     try{
         await api.delete(`/favorites/${removedBookId}`);
+        dispatch(getReadingList());
     } catch(error){toast(error.message);}
 }
 
