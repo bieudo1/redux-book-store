@@ -7,14 +7,14 @@ import { addToReading } from "../components/ReadingList/readingSlice";
 import { getBook } from "../components/BookList/bookSlice";
 
 
-const BACKEND_API = process.env.REACT_APP_BACKEND_API;
+
 
 const BookDetailPage = () => {
   const params = useParams();
   const bookId = params.id;
   const dispatch = useDispatch();
   
-  const {bookList,loading} = useSelector((state) => state.book);
+  const {book,loading} = useSelector((state) => state.book);
   
   const addToReadingList = (book) => {
     dispatch(addToReading({book}))
@@ -23,6 +23,7 @@ const BookDetailPage = () => {
   useEffect(() => {
     dispatch(getBook({bookId}));
   },[dispatch,bookId])
+  console.log(loading)
 
   return (
     <Container>
@@ -33,34 +34,34 @@ const BookDetailPage = () => {
       ) : (
         <Grid container spacing={2} p={4} mt={5} sx={{ border: "1px solid black" }}>
           <Grid item md={4}>
-            {bookList && (
+            {book && (
               <img
                 width="100%"
-                src={`${BACKEND_API}/${bookList.imageLink}`}
+                src={`${book.imageLink}`}
                 alt=""
               />
             )}
           </Grid>
           <Grid item md={8}>
-            {bookList && (
+            {book && (
               <Stack>
-                <h2>{bookList.title}</h2>
+                <h2>{book.title}</h2>
                 <Typography variant="body1">
-                  <strong>Author:</strong> {bookList.author}
+                  <strong>Author:</strong> {book.author}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Year:</strong> {bookList.year}
+                  <strong>Year:</strong> {book.year}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Country:</strong> {bookList.country}
+                  <strong>Country:</strong> {book.country}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Pages:</strong> {bookList.pages}
+                  <strong>Pages:</strong> {book.pages}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Language:</strong> {bookList.language}
+                  <strong>Language:</strong> {book.language}
                 </Typography>
-                <Button variant="outlined" sx={{ width: "fit-content" }} onClick={() => addToReadingList(bookList)}>
+                <Button variant="outlined" sx={{ width: "fit-content" }} onClick={() => addToReadingList(book)}>
                   Add to Reading List
                 </Button>
               </Stack>

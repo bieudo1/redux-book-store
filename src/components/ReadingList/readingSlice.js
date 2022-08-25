@@ -18,6 +18,7 @@ const readingSlice = createSlice({
         }
     }
 })
+export default readingSlice.reducer;
 
 export const getReadingList = () => async (dispatch) => {
     dispatch(readingSlice.actions.startLoading());
@@ -45,4 +46,3 @@ export const addToReading = ({book}) => async (dispatch) => {
     }
 
 }
-export default readingSlice;

@@ -20,11 +20,9 @@ const HomePage = () => {
   const limit = 10;
   const [query, setQuery] = useState("");
   const {bookList,errorMessage,loading} = useSelector((state) => state.book);
-  console.log(bookList)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const handleClickBook = (bookId) => {
-    console.log(bookId)
     navigate(`/books/${bookId}`);
   };
 
